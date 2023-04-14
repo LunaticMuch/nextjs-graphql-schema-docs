@@ -4,6 +4,7 @@
 		"declarationMap": true,
 		"esModuleInterop": true,
 		"moduleResolution": "nodenext",
+		"allowSyntheticDefaultImports": true,
 		"module": "nodenext",
 		"noImplicitAny": false,
 		"outDir": "lib",

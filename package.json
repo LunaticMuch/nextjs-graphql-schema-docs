@@ -18,12 +18,14 @@
 	],
 	"scripts": {
 		"build": "tsc",
+		"clean": "rimraf ./lib",
 		"format": "prettier \"**/*\" --ignore-unknown",
 		"format:write": "pnpm format --write",
 		"lint": "eslint . --max-warnings 0 --report-unused-disable-directives",
 		"lint:packages": "pnpm-deduplicate --list",
 		"lint:spelling": "cspell \"**\" \".github/**/*\"",
-		"start": "nodemon"
+		"start": "nodemon",
+		"start:example": "npm run build && npm run  dev --prefix ./example"
 	},
 	"lint-staged": {
 		"*": "prettier --ignore-unknown --write"
@@ -32,8 +34,7 @@
 		"@graphql-tools/graphql-file-loader": "^7.5.16",
 		"@graphql-tools/load": "^7.8.13",
 		"graphql": "^16.6.0",
-		"lodash": "4.17.21",
-		"radash": "^10.8.1"
+		"lodash": "4.17.21"
 	},
 	"devDependencies": {
 		"@types/eslint": "^8.21.1",
@@ -56,6 +57,7 @@
 		"nodemon": "^2.0.22",
 		"prettier": "^2.8.3",
 		"prettier-plugin-packagejson": "^2.4.2",
+		"rimraf": "^5.0.0",
 		"stringify-object": "^5.0.0",
 		"ts-node": "^10.9.1",
 		"typescript": "^4.9.0"
