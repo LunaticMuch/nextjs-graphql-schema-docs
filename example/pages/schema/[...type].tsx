@@ -1,41 +1,60 @@
-import { loadSchemaSync } from "@graphql-tools/load";
-import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
-
-// const mySchema = await loadSchema("../schema/schema.graphql", {
-// 	loaders: [new GraphQLFileLoader()],
-// });
-
 import { schemaParser } from "../../../lib/index.js";
+import { cwd } from "node:process";
+import Link from "next/link";
 
-const loadedSchema = loadSchemaSync("../../../schema/schema.graphql", {
-	loaders: [new GraphQLFileLoader()],
-});
+// Initialize the schema parser reading from disk
+const t = new schemaParser(`${cwd()}/schema/schema.graphql`);
 
-const t = new schemaParser(loadedSchema);
+export default function Type({ typeInfo }) {
+	const sidebar = () => {
+		const sidebar = typeInfo?.sidebar;
+		const keys = Object.keys(sidebar);
 
-console.log(loadedSchema);
-
-export default function Post({ postData }) {
-	return (
-		<div className="h-screen p-16 text-gray-100 bg-gray-800">
-			<div className="text-3xl font-bold text-center">{postData.title}</div>
-			<div className="my-8 text-justify text-gray-200">
-				{postData.description}
+		return (
+			<div className="">
+				{keys.map((k) => (
+					<div className="pb-4" key={k}>
+						<span className="text-xl font-bold">{k}</span>
+						<ul className="text-base">
+							{sidebar[k].map((o) => (
+								<li key={o.name}>
+									<Link href={o.path} className="hover:underline">
+										{o.name}
+									</Link>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
 			</div>
-			<div className="text-gray-400">Published On: {postData.date}</div>
-		</div>
+		);
+	};
+
+	return (
+		<>
+			<div className="container grid h-screen grid-cols-2 p-16 text-gray-900">
+				<div className="w-1/4">{sidebar()}</div>
+				<div>
+					<div className="text-3xl font-bold text-center">{typeInfo?.name}</div>
+					<div className="my-8 text-justify">{typeInfo?.description}</div>
+				</div>
+			</div>
+		</>
 	);
 }
 
 export async function getStaticProps(context) {
 	const { type } = context.params;
-	console.log(type);
+	const sidebar = t.getSidebar("schema");
+	const typeName = t.getTypename(type[1]);
+
+	console.log(typeName);
+
 	return {
 		props: {
-			postData: {
-				description: "ciao come va?",
-				title: "CIAO",
-				date: "2020-02-02",
+			typeInfo: {
+				sidebar: sidebar,
+				...typeName,
 			},
 		},
 	};
@@ -43,23 +62,8 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
 	const routes = t.getRoutes();
-	console.log(routes);
-	return routes;
-	// const paths = [
-	// 	["object", "author"],
-	// 	["scalar", "id"],
-	// 	["scalar", "string"],
-	// 	["object", "post"],
-	// 	["scalar", "int"],
-	// 	["object", "query"],
-	// 	["object", "mutation"],
-	// 	["scalar", "boolean"],
-	// ];
-	// return {
-	// 	paths: [
-	// 		{ params: { type: ["object", "author"] } },
-	// 		{ params: { type: ["object", "mutation"] } },
-	// 	],
-	// 	fallback: true,
-	// };
+	return {
+		paths: routes,
+		fallback: false,
+	};
 }

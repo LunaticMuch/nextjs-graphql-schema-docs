@@ -25,14 +25,14 @@
 		"lint:packages": "pnpm-deduplicate --list",
 		"lint:spelling": "cspell \"**\" \".github/**/*\"",
 		"start": "nodemon",
-		"start:example": "npm run build && npm run  dev --prefix ./example"
+		"start:example": "npm run clean && npm run build && npm run  dev --prefix ./example"
 	},
 	"lint-staged": {
 		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
-		"@graphql-tools/graphql-file-loader": "^7.5.16",
-		"@graphql-tools/load": "^7.8.13",
+		"@graphql-tools/graphql-file-loader": "^7.5.17",
+		"@graphql-tools/load": "^7.8.14",
 		"graphql": "^16.6.0",
 		"lodash": "4.17.21"
 	},

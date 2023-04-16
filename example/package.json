@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@graphql-tools/graphql-file-loader": "^7.5.17",
-    "@graphql-tools/load": "^7.8.14",
     "@types/node": "18.15.11",
     "@types/react": "18.0.34",
     "@types/react-dom": "18.0.11",
