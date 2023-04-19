@@ -3,7 +3,7 @@ type Author {
 	"The internal identifier of the author."
 	id: ID! # the ! means that every author object _must_ have an id
 	"The first name of the author. It might not be the legal name. It's just a name mate...."
-	firstName: String
+	firstName: String @deprecated(reason:"this is bad")
 	"The last name of the author. It might be everything as we do not run Know Your Author."
 	lastName: String
 	"""

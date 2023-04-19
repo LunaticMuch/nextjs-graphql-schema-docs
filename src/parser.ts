@@ -1,6 +1,9 @@
 import { loadSchemaSync } from "@graphql-tools/load";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 
+// import * as fs from "fs";
+// import stringifyObject from "stringify-object";
+
 import { getSchema } from "./introspection/introspection.js";
 import { GraphQLSchema } from "graphql";
 import {
@@ -31,16 +34,20 @@ export class schemaParser {
 	}
 
 	// dump(): void {
-	// 	fs.writeFile("test.json", stringifyObject(this.schema), function (err) {
-	// 		if (err) {
-	// 			console.log(err);
+	// 	fs.writeFile(
+	// 		"schema_dump.json",
+	// 		stringifyObject(this.schema),
+	// 		function (err) {
+	// 			if (err) {
+	// 				console.log(err);
+	// 			}
 	// 		}
-	// 	});
+	// 	);
 	// }
 
 	// dumpSimplified(): void {
 	// 	fs.writeFile(
-	// 		"test.json",
+	// 		"schema_simplified_dump.json",
 	// 		stringifyObject(this.simplifiedSchema),
 	// 		function (err) {
 	// 			if (err) {
@@ -89,6 +96,6 @@ export class schemaParser {
 			}
 		);
 
-		return { description: type?.description, name: type?.name };
+		return type;
 	}
 }

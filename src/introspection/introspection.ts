@@ -24,6 +24,7 @@ import {
 	SimplifiedField,
 } from "./types.js";
 import { typeNameToId } from "./utils.js";
+import { stringify } from "querystring";
 
 function unwrapType(type) {
 	let unwrappedType = type;
@@ -33,7 +34,6 @@ function unwrapType(type) {
 		typeWrappers.push(isNonNullType(unwrappedType) ? "NON_NULL" : "LIST");
 		unwrappedType = unwrappedType.ofType;
 	}
-
 	return {
 		type: unwrappedType.name,
 		typeWrappers,
@@ -62,8 +62,16 @@ function convertField(
 			field.args.map((arg) => [arg.name, convertInputValue(arg)])
 		),
 		isDeprecated: field.deprecationReason != null,
-		deprecationReason: field.deprecationReason,
+		deprecationReason: stripUndefined(field.deprecationReason),
 	};
+}
+
+function stripUndefined(String: string): string {
+	console.log(String);
+	if (String === undefined) {
+		return null;
+	}
+	return String;
 }
 
 function convertType(
