@@ -240,9 +240,20 @@ function addParent(schema: SimplifiedIntrospection) {
 	/*
 	 * Group fields by their corresponding type id
 	 */
-	schema.types = R.groupBy(function (field) {
-		return field.type.id;
-	}, allFields);
+
+
+	const mappings = R.map (
+		x => R.map(y => y.id, x),
+		R.groupBy(function (field) {
+			return field.type.id;
+		}, allFields)
+	);
+
+	R.forEach(type => {
+		if (mappings[type]) {
+			(schema.types[type] as any).parents = mappings[type];
+		}
+	}, R.keys(schema.types));
 }
 
 export function getSchema(schema: GraphQLSchema) {
