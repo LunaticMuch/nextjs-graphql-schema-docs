@@ -1,4 +1,5 @@
 import _ from "lodash";
+import * as R from "ramda";
 
 import {
 	GraphQLNamedType,
@@ -208,7 +209,40 @@ function assignTypesAndIDs(schema: SimplifiedIntrospection) {
 }
 
 function addParent(schema: SimplifiedIntrospection) {
-	return schema;
+	function extractFields(type) {
+		// no need to inspect circular types any further
+		if (type.type === "[Circular]") return [type];
+
+		// same with scalars and enums
+		if (R.includes(type.kind && type.kind, ["SCALAR", "ENUM"])) return [];
+		if (
+			type.type &&
+			type.type.kind &&
+			R.includes(type.type.kind, ["SCALAR", "ENUM"])
+		)
+			return [];
+
+		return R.chain((currentType) => {
+			// if it's a composite object, use recursion to introspect the inner object
+			const innerTypes = currentType.type.fields
+				? R.chain((subType) => extractFields(subType), currentType.type.fields)
+				: [currentType];
+			// dedupe types by their id
+			return R.uniqBy((x) => x.id, R.append(currentType, innerTypes));
+		}, R.values(type.fields));
+	}
+
+	const allFields = R.chain(
+		(type) => extractFields(type),
+		R.values(schema.types)
+	);
+
+	/*
+	 * Group fields by their corresponding type id
+	 */
+	schema.types = R.groupBy(function (field) {
+		return field.type.id;
+	}, allFields);
 }
 
 export function getSchema(schema: GraphQLSchema) {
