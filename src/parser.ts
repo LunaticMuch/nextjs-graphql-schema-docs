@@ -16,6 +16,8 @@ import find from "lodash/find.js";
 import groupBy from "lodash/groupBy.js";
 import orderBy from "lodash/orderBy.js";
 
+import stringify from "safe-stable-stringify";
+
 export class schemaParser {
 	location: string;
 	schema: GraphQLSchema;
@@ -86,16 +88,15 @@ export class schemaParser {
 	}
 
 	// FIXME: Define a type? maybe reuse a type?
-	getTypename(name: string) {
+	getTypename(name: string): object {
 		// FIXME: there should be a better way to do this ... can it be right to uppercase all objects by default?
-		console.log(name);
 		const type: SimplifiedType = find(
 			this.simplifiedSchema.types,
 			function (o) {
 				return o.name.toUpperCase() == name.toUpperCase();
 			}
 		);
-
-		return type;
+		const t = stringify(type);
+		return JSON.parse(t);
 	}
 }

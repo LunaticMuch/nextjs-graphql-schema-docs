@@ -35,7 +35,6 @@ export interface SimplifiedTypeBase {
 	inputFields?: {
 		[name: string]: SimplifiedInputField;
 	};
-
 	isRelayType?: boolean;
 }
 

@@ -24,7 +24,6 @@ import {
 	SimplifiedField,
 } from "./types.js";
 import { typeNameToId } from "./utils.js";
-import { stringify } from "querystring";
 
 function unwrapType(type) {
 	let unwrappedType = type;
@@ -62,16 +61,8 @@ function convertField(
 			field.args.map((arg) => [arg.name, convertInputValue(arg)])
 		),
 		isDeprecated: field.deprecationReason != null,
-		deprecationReason: stripUndefined(field.deprecationReason),
+		deprecationReason: field.deprecationReason,
 	};
-}
-
-function stripUndefined(String: string): string {
-	console.log(String);
-	if (String === undefined) {
-		return null;
-	}
-	return String;
 }
 
 function convertType(
@@ -152,19 +143,19 @@ function simplifySchema(schema: GraphQLSchema): SimplifiedIntrospection {
 	};
 }
 
-function markDeprecated(schema: SimplifiedIntrospectionWithIds): void {
-	// Remove deprecated fields.
-	_.each(schema.types, (type) => {
-		type.fields = _.pickBy(type.fields, (field) => !field.isDeprecated);
-	});
+// function markDeprecated(schema: SimplifiedIntrospectionWithIds): void {
+// 	// Remove deprecated fields.
+// 	_.each(schema.types, (type) => {
+// 		type.fields = _.pickBy(type.fields, (field) => !field.isDeprecated);
+// 	});
 
-	// We can't remove types that end up being empty
-	// because we cannot be sure that the @deprecated directives where
-	// consistently added to the schema we're handling.
-	//
-	// Entities may have non deprecated fields pointing towards entities
-	// which are deprecated.
-}
+// 	// We can't remove types that end up being empty
+// 	// because we cannot be sure that the @deprecated directives where
+// 	// consistently added to the schema we're handling.
+// 	//
+// 	// Entities may have non deprecated fields pointing towards entities
+// 	// which are deprecated.
+// }
 
 function assignTypesAndIDs(schema: SimplifiedIntrospection) {
 	(schema as any).queryType = schema.types[schema.queryType];
@@ -216,8 +207,13 @@ function assignTypesAndIDs(schema: SimplifiedIntrospection) {
 	schema.types = _.keyBy(schema.types, "id");
 }
 
+function addParent(schema: SimplifiedIntrospection) {
+	return schema;
+}
+
 export function getSchema(schema: GraphQLSchema) {
 	const simpleSchema = simplifySchema(schema);
 	assignTypesAndIDs(simpleSchema);
+	addParent(simpleSchema);
 	return simpleSchema;
 }
