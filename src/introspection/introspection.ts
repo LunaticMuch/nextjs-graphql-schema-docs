@@ -1,5 +1,4 @@
-import _ from "lodash";
-import * as R from "ramda";
+import _, { map, shuffle } from "lodash";
 
 import {
 	GraphQLNamedType,
@@ -16,6 +15,16 @@ import {
 	isInterfaceType,
 	isScalarType,
 	SingleFieldSubscriptionsRule,
+	GraphQLEnumType,
+	GraphQLInputObjectType,
+	GraphQLInputType,
+	GraphQLInterfaceType,
+	GraphQLList,
+	GraphQLNonNull,
+	GraphQLObjectType,
+	GraphQLOutputType,
+	GraphQLScalarType,
+	GraphQLUnionType,
 } from "graphql";
 import {
 	SimplifiedIntrospection,
@@ -26,7 +35,31 @@ import {
 } from "./types.js";
 import { typeNameToId } from "./utils.js";
 
-function unwrapType(type) {
+function unwrapType(
+	type:
+		| GraphQLScalarType<unknown, unknown>
+		| GraphQLEnumType
+		| GraphQLInputObjectType
+		| GraphQLList<GraphQLInputType>
+		| GraphQLNonNull<
+				| GraphQLEnumType
+				| GraphQLInputObjectType
+				| GraphQLScalarType<unknown, unknown>
+				| GraphQLList<GraphQLInputType>
+		  >
+		| GraphQLInterfaceType
+		| GraphQLUnionType
+		| GraphQLObjectType<any, any>
+		| GraphQLList<GraphQLOutputType>
+		| GraphQLNonNull<
+				| GraphQLEnumType
+				| GraphQLInterfaceType
+				| GraphQLUnionType
+				| GraphQLScalarType<unknown, unknown>
+				| GraphQLObjectType<any, any>
+				| GraphQLList<GraphQLOutputType>
+		  >
+) {
 	let unwrappedType = type;
 	const typeWrappers = [];
 
@@ -214,46 +247,52 @@ function addParent(schema: SimplifiedIntrospection) {
 		if (type.type === "[Circular]") return [type];
 
 		// same with scalars and enums
-		if (R.includes(type.kind && type.kind, ["SCALAR", "ENUM"])) return [];
+		if (_.includes(["SCALAR", "ENUM"], type.kind && type.kind)) return [];
 		if (
 			type.type &&
 			type.type.kind &&
-			R.includes(type.type.kind, ["SCALAR", "ENUM"])
+			_.includes(["SCALAR", "ENUM"], type.type.kind)
 		)
 			return [];
 
-		return R.chain((currentType) => {
+		return _.flatMap(_.values(type.fields), (currentType) => {
 			// if it's a composite object, use recursion to introspect the inner object
 			const innerTypes = currentType.type.fields
-				? R.chain((subType) => extractFields(subType), currentType.type.fields)
+				? _.flatMap(currentType.type.fields, (subType) =>
+						extractFields(subType)
+				  )
 				: [currentType];
 			// dedupe types by their id
-			return R.uniqBy((x) => x.id, R.append(currentType, innerTypes));
-		}, R.values(type.fields));
+			return _.uniqBy(_.concat(innerTypes, currentType), (x) => x.id);
+		});
 	}
 
-	const allFields = R.chain(
-		(type) => extractFields(type),
-		R.values(schema.types)
+	const allFields = _.flatMap(_.values(schema.types), (type) =>
+		extractFields(type)
 	);
 
 	/*
 	 * Group fields by their corresponding type id
 	 */
+	const groupedFieldsByType = _.groupBy(allFields, function (field) {
+		return field.type.id;
+	});
 
+	/*
+	 * Extract id and prepare the mapping
+	 */
+	const mappings = _.mapValues(groupedFieldsByType, function (t) {
+		return _.map(t, (field) => field.id);
+	});
 
-	const mappings = R.map (
-		x => R.map(y => y.id, x),
-		R.groupBy(function (field) {
-			return field.type.id;
-		}, allFields)
-	);
-
-	R.forEach(type => {
+	/*
+	 * Assign the mapping
+	 */
+	_.each(Object.keys(schema.types), (type) => {
 		if (mappings[type]) {
 			(schema.types[type] as any).parents = mappings[type];
 		}
-	}, R.keys(schema.types));
+	});
 }
 
 export function getSchema(schema: GraphQLSchema) {
