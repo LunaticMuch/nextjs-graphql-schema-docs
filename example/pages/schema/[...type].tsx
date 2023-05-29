@@ -85,8 +85,6 @@ export async function getStaticProps(context) {
 	//FIXME: the magic number sucks
 	const typeName = t.getTypename(type[1]);
 
-	// console.log(typeName);
-
 	return {
 		props: {
 			typeInfo: {
