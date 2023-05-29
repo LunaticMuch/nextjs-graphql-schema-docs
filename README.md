@@ -1,6 +1,6 @@
 # Plugin for generating schema documentation in Next.JS
 
-> **WARNING**: Be careful, this is currently a **beta**, or a preview-release version. It might work as expected, it might even not work at all, or I might sell your house without your knowledge!
+> **WARNING**: Be careful, this is currently a **beta**, or a preview-release version. It might work as expected or not, it might even not work at all, or I might sell your house without your knowledge!
 
 ## Rationale
 
