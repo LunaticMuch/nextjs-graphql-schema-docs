@@ -1,5 +1,6 @@
 import { loadSchemaSync } from "@graphql-tools/load";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { UrlLoader } from "@graphql-tools/url-loader";
 
 // import * as fs from "fs";
 // import stringifyObject from "stringify-object";
@@ -23,16 +24,22 @@ export class schemaParser {
 	schema: GraphQLSchema;
 	simplifiedSchema: SimplifiedIntrospection;
 
-	constructor(location: string) {
-		this.schema = this.loadSchema(location);
+	constructor(uri: string) {
+		this.schema = this.loadSchema(uri);
 		this.simplifiedSchema = getSchema(this.schema);
 	}
 
-	loadSchema(location: string) {
-		const schema = loadSchemaSync(location, {
-			loaders: [new GraphQLFileLoader()],
-		});
-		return schema;
+	loadSchema(uri: string): GraphQLSchema {
+		const URLregex = new RegExp("https://.+", "i");
+
+		// FIXME: Can be done better
+		if (!URLregex.test(uri)) {
+			return loadSchemaSync(uri, {
+				loaders: [new GraphQLFileLoader()],
+			});
+		} else {
+			return loadSchemaSync(uri, { loaders: [new UrlLoader()] });
+		}
 	}
 
 	// dump(): void {
