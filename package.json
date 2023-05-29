@@ -39,7 +39,8 @@
 		"lint:spelling": "cspell \"**\" \".github/**/*\"",
 		"prepack": "npm run build",
 		"start": "nodemon",
-		"start:example": "npm run clean && npm run build && npm run  dev --prefix ./example"
+		"start:example": "npm run clean && npm run build && npm run  dev --prefix ./example",
+		"test": "exit 0"
 	},
 	"lint-staged": {
 		"*": "prettier --ignore-unknown --write"
