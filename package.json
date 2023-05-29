@@ -1,15 +1,29 @@
 {
-	"name": "next-schema-plugin-ts",
-	"version": "0.0.0",
-	"description": "",
+	"name": "nextjs-graphql-schema-docs",
+	"version": "0.0.1",
+	"description": "A plugin for Next.JS that allow the rendering of a GraphQL Schema",
+	"keywords": [
+		"nextjs",
+		"graphql",
+		"documentation",
+		"graphql documentation",
+		"plugin",
+		"extension",
+		"next.js"
+	],
+	"homepage": "https://github.com/LunaticMuch/nextjs-graphql-schema-docs#readme",
+	"bugs": {
+		"url": "https://github.com/LunaticMuch/nextjs-graphql-schema-docs/issues"
+	},
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://github.com/LunaticMuch/nextjs-graphql-schema-docs.git"
 	},
 	"license": "MIT",
-	"author": "",
+	"author": "Stefano Cislaghi <s.cislaghi@gmail.com> (http://stefanocislaghi.com/)",
 	"type": "module",
 	"main": "./lib/index.js",
+	"types": "./lib/index.d.ts",
 	"files": [
 		"lib/",
 		"package.json",
@@ -20,10 +34,10 @@
 		"build": "tsc",
 		"clean": "rimraf ./lib",
 		"format": "prettier \"**/*\" --ignore-unknown",
-		"format:write": "pnpm format --write",
 		"lint": "eslint . --max-warnings 0 --report-unused-disable-directives",
-		"lint:packages": "pnpm-deduplicate --list",
+		"lint:packages": "npm find-dupes",
 		"lint:spelling": "cspell \"**\" \".github/**/*\"",
+		"prepack": "npm run build",
 		"start": "nodemon",
 		"start:example": "npm run clean && npm run build && npm run  dev --prefix ./example"
 	},
@@ -64,8 +78,8 @@
 		"ts-node": "^10.9.1",
 		"typescript": "^5.0.4"
 	},
-	"packageManager": "pnpm@8.0.0+",
 	"engines": {
-		"node": ">=18"
+		"node": ">=18",
+		"npm": ">=9.5.0"
 	}
 }
