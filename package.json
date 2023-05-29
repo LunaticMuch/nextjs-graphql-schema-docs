@@ -1,6 +1,6 @@
 {
 	"name": "nextjs-graphql-schema-docs",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "A plugin for Next.JS that allow the rendering of a GraphQL Schema",
 	"keywords": [
 		"nextjs",
