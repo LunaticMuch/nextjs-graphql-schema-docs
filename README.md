@@ -104,3 +104,5 @@ The demo schema is available in `schema/schema.graphql`. You can add types and f
 
 Much of the work has been inspired from [GraphQL Markdown](https://graphql-markdown.github.io) and [GraphQL Voyager](https://github.com/graphql-kit/graphql-voyager).
 The core code for working out the schema is extracted from GraphQL Voyager.
+
+A special thank to @della-90 for the work on parents identification #1
