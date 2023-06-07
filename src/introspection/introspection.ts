@@ -22,7 +22,7 @@ import {
 	SimplifiedType,
 	SimplifiedInputField,
 	SimplifiedField,
-} from "./types.js";
+} from "../types.js";
 import { typeNameToId } from "./utils.js";
 
 function unwrapType(type) {
@@ -215,5 +215,8 @@ export function getSchema(schema: GraphQLSchema) {
 	const simpleSchema = simplifySchema(schema);
 	assignTypesAndIDs(simpleSchema);
 	addParent(simpleSchema);
-	return simpleSchema;
+
+	// Force cast to the correct type
+	// FIXME: This is not the right way of doing it
+	return simpleSchema as any as SimplifiedIntrospectionWithIds;
 }
