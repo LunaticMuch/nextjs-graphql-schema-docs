@@ -15,6 +15,7 @@ export function stringifyWrappers(wrappers) {
         break;
     }
   }
+
   return [left, right];
 }
 

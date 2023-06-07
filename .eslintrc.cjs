@@ -10,6 +10,7 @@ module.exports = {
 		"plugin:regexp/recommended",
 		"prettier",
 	],
+
 	overrides: [
 		{
 			extends: ["plugin:markdown/recommended"],
@@ -22,6 +23,7 @@ module.exports = {
 				"plugin:typescript-sort-keys/recommended",
 			],
 			files: ["**/*.ts"],
+			excludedFiles: ["./example/*"],
 			parser: "@typescript-eslint/parser",
 		},
 		{
@@ -29,7 +31,7 @@ module.exports = {
 				"plugin:@typescript-eslint/recommended-requiring-type-checking",
 				"plugin:@typescript-eslint/strict",
 			],
-			excludedFiles: ["**/*.md/*.ts"],
+			excludedFiles: ["**/*.md", "./example/*"],
 			files: ["**/*.ts"],
 			parser: "@typescript-eslint/parser",
 			parserOptions: {

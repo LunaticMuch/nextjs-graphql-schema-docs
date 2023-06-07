@@ -1,21 +1,21 @@
-import { loadSchemaSync } from "@graphql-tools/load";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadSchemaSync } from "@graphql-tools/load";
 import { UrlLoader } from "@graphql-tools/url-loader";
-import { getSchema } from "./introspection/introspection.js";
 import { GraphQLSchema } from "graphql";
+import compact from "lodash/compact.js";
+import find from "lodash/find.js";
+import groupBy from "lodash/groupBy.js";
+import map from "lodash/map.js";
+import orderBy from "lodash/orderBy.js";
+import stringify from "safe-stable-stringify";
+
+import { ROOT_TYPE_LOCALE } from "./helpers.js";
+import { getSchema } from "./introspection/introspection.js";
 import {
 	SimplifiedField,
 	SimplifiedIntrospectionWithIds,
 	SimplifiedTypeWithIDs,
 } from "./types.js";
-import map from "lodash/map.js";
-import compact from "lodash/compact.js";
-import find from "lodash/find.js";
-import groupBy from "lodash/groupBy.js";
-import orderBy from "lodash/orderBy.js";
-
-import stringify from "safe-stable-stringify";
-import { ROOT_TYPE_LOCALE } from "./helpers.js";
 
 export class schemaParser {
 	location: string;

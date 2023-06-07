@@ -1,6 +1,8 @@
-import { schemaParser } from "../../../lib/index.js";
 import { cwd } from "node:process";
+
 import Link from "next/link";
+
+import { schemaParser } from "../../../lib/index.js";
 
 // Initialize the schema parser reading from disk
 const t = new schemaParser(`${cwd()}/schema/schema.graphql`);

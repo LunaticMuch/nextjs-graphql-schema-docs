@@ -1,85 +1,71 @@
 import { IntrospectionEnumValue } from "graphql";
 
 export interface SimplifiedArg {
-	name: string;
-	description: string;
 	defaultValue: any;
-	typeWrappers: Array<"NON_NULL" | "LIST">;
+	description: string;
 	id?: string;
+	name: string;
+	typeWrappers: ("NON_NULL" | "LIST")[];
 }
 
 export interface SimplifiedField<T> {
-	name: string;
-	type: T;
-	id?: string;
-	relayType?: T;
-	description: string | null;
-	typeWrappers: Array<"NON_NULL" | "LIST">;
-	isDeprecated: boolean;
+	args: Record<string, SimplifiedArg>;
 	deprecationReason: string | null;
-	args: {
-		[name: string]: SimplifiedArg;
-	};
-	relayArgs?: {
-		[name: string]: SimplifiedArg;
-	};
+	description: string | null;
+	id?: string;
+	isDeprecated: boolean;
+	name: string;
+	relayArgs?: Record<string, SimplifiedArg>;
+	relayType?: T;
+	type: T;
+	typeWrappers: ("NON_NULL" | "LIST")[];
 }
 
 export type SimplifiedInputField = SimplifiedArg;
 
 export interface SimplifiedTypeBase {
+	description: string;
+	enumValues?: IntrospectionEnumValue[];
+	inputFields?: Record<string, SimplifiedInputField>;
+	isRelayType?: boolean;
 	kind: "OBJECT" | "INTERFACE" | "UNION" | "ENUM" | "INPUT_OBJECT" | "SCALAR";
 	name: string;
-	description: string;
-	enumValues?: Array<IntrospectionEnumValue>;
-	inputFields?: {
-		[name: string]: SimplifiedInputField;
-	};
-	isRelayType?: boolean;
 }
 
 export type SimplifiedType = SimplifiedTypeBase & {
-	fields?: {
-		[name: string]: SimplifiedField<string>;
-	};
-	interfaces?: Array<string>;
-	derivedTypes?: Array<string>;
-	possibleTypes?: Array<string>;
+	derivedTypes?: string[];
+	fields?: Record<string, SimplifiedField<string>>;
+	interfaces?: string[];
+	possibleTypes?: string[];
 };
 
 export type SimplifiedTypeWithIDs = SimplifiedTypeBase & {
+	derivedTypes?: {
+		id: string;
+		type: SimplifiedTypeWithIDs;
+	}[];
+	fields?: Record<string, SimplifiedField<SimplifiedTypeWithIDs>>;
 	id: string;
-	fields?: {
-		[name: string]: SimplifiedField<SimplifiedTypeWithIDs>;
-	};
-	interfaces?: Array<{
+	interfaces?: {
 		id: string;
 		type: SimplifiedTypeWithIDs;
-	}>;
-	derivedTypes?: Array<{
+	}[];
+	possibleTypes?: {
 		id: string;
 		type: SimplifiedTypeWithIDs;
-	}>;
-	possibleTypes?: Array<{
-		id: string;
-		type: SimplifiedTypeWithIDs;
-	}>;
+	}[];
 };
 
 export interface SimplifiedIntrospection {
-	types: {
-		[typeName: string]: SimplifiedType;
-	};
-	queryType: string;
 	mutationType: string | null;
+	queryType: string;
 	subscriptionType: string | null;
+	types: Record<string, SimplifiedType>;
 }
 
 export interface SimplifiedIntrospectionWithIds {
-	types: {
-		[typeName: string]: SimplifiedTypeWithIDs;
-	};
-	queryType: SimplifiedTypeWithIDs;
 	mutationType: SimplifiedTypeWithIDs | null;
+	queryType: SimplifiedTypeWithIDs;
 	subscriptionType: SimplifiedTypeWithIDs | null;
+	types: Record<string, SimplifiedTypeWithIDs>;
 }
