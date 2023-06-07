@@ -1,7 +1,6 @@
 import { schemaParser } from "../../../lib/index.js";
 import { cwd } from "node:process";
 import Link from "next/link";
-import { TypeNameMetaFieldDef } from "graphql";
 
 // Initialize the schema parser reading from disk
 const t = new schemaParser(`${cwd()}/schema/schema.graphql`);
@@ -72,18 +71,18 @@ export default function Type({ typeInfo }) {
 				<div className="">
 					<div className="text-3xl font-bold text-center">{typeInfo?.name}</div>
 					<div className="my-8 text-justify">{typeInfo?.description}</div>
-					<div>{fields()}</div>
+					<div>{typeInfo.kind == "OBJECT" && fields()}</div>
 				</div>
 			</div>
 		</>
 	);
 }
 
-export async function getStaticProps(context) {
-	const { type } = context.params;
+export async function getStaticProps(context: { params: { type: any } }) {
+	const [kind, type] = context.params.type;
 	const sidebar = t.getSidebar("schema");
-	//FIXME: the magic number sucks
-	const typeName = t.getTypename(type[1]);
+
+	const typeName = t.getTypeName(kind, type);
 
 	return {
 		props: {
