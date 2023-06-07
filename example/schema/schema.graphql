@@ -3,7 +3,7 @@ type Author {
 	"The internal identifier of the author."
 	id: ID! # the ! means that every author object _must_ have an id
 	"The first name of the author. It might not be the legal name. It's just a name mate...."
-	firstName: String
+	firstName: String @deprecated(reason: "this is bad")
 	"The last name of the author. It might be everything as we do not run Know Your Author."
 	lastName: String
 	"""
@@ -13,7 +13,7 @@ type Author {
 }
 
 "A blog post or something else like carbonara recipe."
-type Post {
+type Post implements Stuff {
 	"The internal identifier we love to leak outside."
 	id: ID!
 	"The title of the post. There's no limit to the title, so possible the whole post content can be in the title."
@@ -29,6 +29,8 @@ type Post {
 type Query {
 	"Fetch all posts without any arguments. Default order is funky."
 	posts: [Post]
+	"Search everything"
+	search: [Result]
 }
 
 # this schema allows the following mutation:
@@ -43,4 +45,13 @@ type Mutation {
 schema {
 	query: Query
 	mutation: Mutation
+}
+
+"A result"
+union Result = Author | Post
+
+"A superset of everything"
+interface Stuff {
+	"The identifier of anything"
+	id: ID!
 }

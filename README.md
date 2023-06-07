@@ -73,9 +73,16 @@ Example:
 ];
 ```
 
-### `schemaParser.getTypename(name: string)`
+### `schemaParser.getTypename(kind: string, name: string)`
 
 Return the type information for a given type.
+The kind being accepted is the same as part of the route definition.
+
+It can be destructed in this way
+
+```javascript
+const [kind, type] = context.params.type;
+```
 
 ### `schemaParser.getSidebar(prefix: string)`
 

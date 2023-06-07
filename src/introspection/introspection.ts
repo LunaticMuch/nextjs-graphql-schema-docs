@@ -1,28 +1,28 @@
+import {
+	GraphQLArgument,
+	GraphQLField,
+	GraphQLInputField,
+	GraphQLNamedType,
+	GraphQLSchema,
+	isEnumType,
+	isInputObjectType,
+	isInterfaceType,
+	isNonNullType,
+	isObjectType,
+	isScalarType,
+	isUnionType,
+	isWrappingType,
+	SingleFieldSubscriptionsRule,
+} from "graphql";
 import _ from "lodash";
 
 import {
-	GraphQLNamedType,
-	GraphQLSchema,
-	GraphQLArgument,
-	GraphQLInputField,
-	GraphQLField,
-	isWrappingType,
-	isNonNullType,
-	isUnionType,
-	isEnumType,
-	isInputObjectType,
-	isObjectType,
-	isInterfaceType,
-	isScalarType,
-	SingleFieldSubscriptionsRule,
-} from "graphql";
-import {
+	SimplifiedField,
+	SimplifiedInputField,
 	SimplifiedIntrospection,
 	SimplifiedIntrospectionWithIds,
 	SimplifiedType,
-	SimplifiedInputField,
-	SimplifiedField,
-} from "./types.js";
+} from "../types.js";
 import { typeNameToId } from "./utils.js";
 
 function unwrapType(type) {
@@ -33,6 +33,7 @@ function unwrapType(type) {
 		typeWrappers.push(isNonNullType(unwrappedType) ? "NON_NULL" : "LIST");
 		unwrappedType = unwrappedType.ofType;
 	}
+
 	return {
 		type: unwrappedType.name,
 		typeWrappers,
@@ -124,9 +125,9 @@ function convertType(
 }
 
 function mapValues<T, R>(
-	obj: { [key: string]: T },
+	obj: Record<string, T>,
 	mapper: (value: T) => R
-): { [key: string]: R } {
+): Record<string, R> {
 	return Object.fromEntries(
 		Object.entries(obj).map(([key, value]) => [key, mapper(value)])
 	);
@@ -136,8 +137,8 @@ function simplifySchema(schema: GraphQLSchema): SimplifiedIntrospection {
 	return {
 		types: mapValues(schema.getTypeMap(), (type) => convertType(schema, type)),
 		queryType: schema.getQueryType().name,
-		mutationType: schema.getMutationType()?.name ?? null,
-		subscriptionType: schema.getSubscriptionType()?.name ?? null,
+		mutationType: schema.getMutationType().name ?? null,
+		subscriptionType: schema.getSubscriptionType().name ?? null,
 		//FIXME:
 		//directives:
 	};
@@ -215,5 +216,8 @@ export function getSchema(schema: GraphQLSchema) {
 	const simpleSchema = simplifySchema(schema);
 	assignTypesAndIDs(simpleSchema);
 	addParent(simpleSchema);
-	return simpleSchema;
+
+	// Force cast to the correct type
+	// FIXME: This is not the right way of doing it
+	return simpleSchema as any as SimplifiedIntrospectionWithIds;
 }

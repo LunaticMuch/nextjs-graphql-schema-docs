@@ -1,29 +1,29 @@
 {
 	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
 		"declaration": true,
 		"declarationMap": true,
 		"esModuleInterop": true,
-		"moduleResolution": "nodenext",
-		"allowSyntheticDefaultImports": true,
 		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"noImplicitAny": false,
 		"outDir": "lib",
 		"skipLibCheck": true,
-		"strictNullChecks": false,
 		"sourceMap": true,
 		"strict": true,
+		"strictNullChecks": false,
 		"target": "ES2022"
 	},
-	"ts-node": {
-		"esm": true
-	},
-	"include": [
-		"src"
-	],
 	"exclude": [
 		"node_modules",
 		"lib",
 		"example",
 		"schema"
-	]
+	],
+	"include": [
+		"src"
+	],
+	"ts-node": {
+		"esm": true
+	}
 }
