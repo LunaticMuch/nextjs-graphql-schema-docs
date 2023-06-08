@@ -37,6 +37,7 @@ export type SimplifiedType = SimplifiedTypeBase & {
 	fields?: Record<string, SimplifiedField<string>>;
 	interfaces?: string[];
 	possibleTypes?: string[];
+	parents?: string[];
 };
 
 export type SimplifiedTypeWithIDs = SimplifiedTypeBase & {
@@ -54,6 +55,7 @@ export type SimplifiedTypeWithIDs = SimplifiedTypeBase & {
 		id: string;
 		type: SimplifiedTypeWithIDs;
 	}[];
+	parents?: string[];
 };
 
 export interface SimplifiedIntrospection {
