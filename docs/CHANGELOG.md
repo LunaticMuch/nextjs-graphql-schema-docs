@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/LunaticMuch/nextjs-graphql-schema-docs/compare/v0.4.0...v0.5.0) (2023-06-08)
+
+
+### Features
+
+* **introspection:** add parents ([f55a174](https://github.com/LunaticMuch/nextjs-graphql-schema-docs/commit/f55a17458d93307352a05c9449dfbf9d5a04e4c2))
+
 # [0.4.0](https://github.com/LunaticMuch/nextjs-graphql-schema-docs/compare/v0.3.0...v0.4.0) (2023-06-07)
 
 
